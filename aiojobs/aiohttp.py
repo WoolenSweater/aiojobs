@@ -33,9 +33,11 @@ def atomic(coro):
     async def wrapper(request):
         if isinstance(request, View):
             # Class Based View decorated.
-            request = request.request
+            _request = request.request
+        else:
+            _request = request
 
-        job = await spawn(request, coro(request))
+        job = await spawn(_request, coro(request))
         return await job.wait()
     return wrapper
 
